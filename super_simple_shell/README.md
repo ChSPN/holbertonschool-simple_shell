@@ -55,8 +55,8 @@ Betty style for both coding and documentation.
 /*AUTRES GCC PAR ANTONIN*/
 
 ## Technologies
-**development environment :** Visual Studio Code with Windows 11, compiled with Ubuntu on WSL & /*ANTONIN*/
-**framework :** C programm & libraries : stdio ; stdlib ; unistd ; sys/wait ; sys/types. /*A COMPLETER ANTONIN*/
+- **development environment :** Visual Studio Code with Windows 11, compiled with Ubuntu on WSL & /*ANTONIN*/
+- **framework :** C programm & libraries : stdio ; stdlib ; unistd ; sys/wait ; sys/types. /*A COMPLETER ANTONIN*/
 
 ## REQUIREMENTS
 [??]
