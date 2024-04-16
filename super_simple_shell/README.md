@@ -66,4 +66,4 @@ Betty style for both coding and documentation.
 - [Charlène SCOMPARIN](https://github.com/ChSPN) - Initial work & contributions.
 
 
-A METTRE A JOUR AVEC TACHES D'ANTONIN & SUPER SIMPLE SHELL
+A METTRE A JOUR AVEC TACHES D'ANTONIN & SUPER SIMPLE SHELL.
