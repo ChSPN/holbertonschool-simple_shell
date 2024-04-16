@@ -1,0 +1,1 @@
+petit readme de super simple shell à compléter
