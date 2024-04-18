@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <string.h>
+#include "main.h"
 
 /**
  * _getenv - Custom implementation of getenv
@@ -10,9 +9,6 @@
  * Return: Pointer to the value of the environment variable,
  * or NULL if not found.
  */
-
-extern char **environ;
-
 char *_getenv(const char *name)
 {
 	int i, len = strlen(name);

@@ -1,7 +1,4 @@
-#include <stdio.h>
-
-/* Declaration of the extern variable environ pointing to the environment */
-extern char **environ;
+#include "main.h"
 
 /**
 * main - Entry point that prints all environment variables
