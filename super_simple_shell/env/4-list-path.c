@@ -38,20 +38,3 @@ path_t *getpath(void)
 
 	return (paths);
 }
-
-/**
-* main - Entry point that prints all environment variables
-*
-* Return: Always 0 (Success)
-*/
-int main(void)
-{
-	path_t *paths = getpath();
-	path_t *next = paths->next;
-	path_t *nexts = next->next;
-
-	printf("%s\n", paths->value);
-	printf("%s\n", next->value);
-	printf("%s\n", nexts->value);
-	return (0);
-}
