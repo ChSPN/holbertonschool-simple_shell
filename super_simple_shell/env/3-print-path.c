@@ -28,14 +28,3 @@ void printpath(void)
 
 	putchar('\n');
 }
-
-/**
-* main - Entry point that prints all environment variables
-*
-* Return: Always 0 (Success)
-*/
-int main(void)
-{
-	printpath();
-	return (0);
-}

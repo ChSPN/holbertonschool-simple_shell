@@ -1,59 +1,48 @@
 #include "main.h"
 
 /**
- * changeOrAddEnvVar- Update or add environment variable.
+ * _setenv - Update or add environment variable.
  * @name: Name of the environment variable to retrieve
  * @value: The value of the variable environment
+ * @overwrite: Overwrite the variable
  * Description: function that changes or adds an environment variable.
+ * Return: State of update
  */
-void changeOrAddEnvVar(const char *name, const char *value)
-{
-	char *var;
-	size_t nameLength = strlen(name);
 
-	for (int index = 0; environ[index] != NULL; index++)
+int _setenv(const char *name, const char *value, int overwrite)
+{
+	/*Check if the variable already exists*/
+	char *env_var = getenv(name);
+
+	if (env_var != NULL && !overwrite)
 	{
-		/* Si la variable d'environnement commence par le nom spécifié*/
-		if (strncmp(environ[index], name, nameLength)
-		== 0 && environ[index][nameLength] == '=')
-		{
-			var = malloc(nameLength + strlen(value) + 2); /* +2 pour '=' et '\0'*/
-			sprintf(var, "%s=%s", name, value);
-			environ[index] = var;
-			return;
-		}
+		return (0);
 	}
 
-	var = malloc(nameLength + strlen(value) + 2);
-	sprintf(var, "%s=%s", name, value);
-	putenv(var);
-}
+	/*+2 for '=' and '\0'*/
+	size_t size = strlen(name) + strlen(value) + 2;
+	char *new_var = malloc(size);
 
-/**
- * main - to test application
- * Description: test
- * Return: a interger
-*/
-int main(void)
-{
-	char **env = environ;
-
-	changeOrAddEnvVar("TEST", "TEST1");
-	while (*env != NULL)
+	if (new_var == NULL)
 	{
-		printf("%s\n", *env);
-		env++;
+		perror("malloc");
+		return (-1);
 	}
 
-	/*Changer ou ajouter une variable d'environnement*/
-	printf("\n\n\n");
-	changeOrAddEnvVar("TEST", "TEST2");
+	sprintf(new_var, "%s=%s", name, value);
 
-	env = environ;
-	while (*env != NULL)
+	/*If variable exists and overwrite is true, remove it first*/
+	if (env_var != NULL)
 	{
-		printf("%s\n", *env);
-		env++;
+		unsetenv(name);
+	}
+
+	/*Add the new variable*/
+	if (putenv(new_var) != 0)
+	{
+		perror("putenv");
+		free(new_var);
+		return (-1);
 	}
 
 	return (0);
