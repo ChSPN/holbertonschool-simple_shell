@@ -7,13 +7,13 @@
 */
 int main(void)
 {
-	int i = 0; /* Index for environment variables */
+	int index = 0; /* Index for environment variables */
 
 	/* Loop through each environment variable in the environ array until NULL */
-	while (environ[i])
+	while (environ[index])
 	{
-		printf("%s\n", environ[i]);
-		i++;
+		printf("%s\n", environ[index]);
+		index++;
 	}
 
 	return (0);
