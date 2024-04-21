@@ -7,26 +7,22 @@
 */
 int main(void)
 {
-	char cmd[MAX_CMD_LEN];
-	char *argv[MAX_ARGS];
-	char *token;
+	char *cmd;
+	char **argv;
 
 	while (1)
 	{
+		cmd = malloc(MAX_CMD_LEN * sizeof(char));
 		printf("#cisfun$ ");
-		if (fgets(cmd, sizeof(cmd), stdin) == NULL)
+		if (fgets(cmd, MAX_CMD_LEN, stdin) == NULL)
 		{
 			printf("\n");
 			exit(0);
 		}
-		cmd[strlen(cmd) - 1] = '\0';
-		token = strtok(cmd, " ");
-		for (int i = 0; i < MAX_ARGS; i++)
-		{
-			argv[i] = token;
-			token = strtok(NULL, " ");
-		}
+		argv = get_argv(cmd);
 		shell_execute(argv);
+		free(argv);
+		free(cmd);
 	}
 	return (0);
 }

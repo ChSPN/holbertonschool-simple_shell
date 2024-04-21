@@ -7,13 +7,14 @@
 */
 int main(void)
 {
-	char cmd[MAX_CMD_LEN];
+	char *cmd;
 	char *argv[2] = { NULL, NULL };
 
 	while (1)
 	{
+		cmd = malloc(MAX_CMD_LEN * sizeof(char));
 		printf("#cisfun$ ");
-		if (fgets(cmd, sizeof(cmd), stdin) == NULL)
+		if (fgets(cmd, MAX_CMD_LEN, stdin) == NULL)
 		{
 			printf("\n");
 			exit(0);
@@ -21,6 +22,7 @@ int main(void)
 		cmd[strlen(cmd) - 1] = '\0';
 		argv[0] = strtok(cmd, " ");
 		shell_execute(argv);
+		free(cmd);
 	}
 	return (0);
 }

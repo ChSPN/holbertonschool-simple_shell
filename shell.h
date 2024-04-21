@@ -14,7 +14,16 @@
  * shell_execute - Execute shell command
  * Description: Fonction to execute shell command
  * @argv: list of command
+ * Return: state of execution
 */
-void shell_execute(char *argv[]);
+int shell_execute(char *argv[]);
+
+/**
+ * get_argv - Get the arguments values
+ * Description: Get the arguments values
+ * @cmd: string of command
+ * Return: Return the list of arguments
+*/
+char **get_argv(char cmd[]);
 
 #endif
