@@ -12,6 +12,7 @@ int main(void)
 	int status;
 	int isExit = 0;
 	int (*execute)(char **) = NULL;
+	size_t max_cmd_length = 256;
 	execute_t executes[] = {
 		{"exit", exit_execute},
 		{ NULL, NULL }
@@ -19,9 +20,9 @@ int main(void)
 
 	while (isExit == 0)
 	{
-		cmd = malloc(MAX_CMD_LEN * sizeof(char));
+		cmd = malloc(max_cmd_length * sizeof(char));
 		printf("#cisfun$ ");
-		if (fgets(cmd, MAX_CMD_LEN, stdin) == NULL)
+		if (getline(&cmd, &max_cmd_length, stdin) < 0)
 		{
 			free(cmd);
 			printf("\n");

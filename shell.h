@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAX_CMD_LEN 256
 #define MAX_ARGS 16
 
 /**

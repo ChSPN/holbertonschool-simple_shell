@@ -8,13 +8,14 @@
 int main(void)
 {
 	char *cmd;
+	size_t max_cmd_length = 256;
 	char *argv[2] = { NULL, NULL };
 
 	while (1)
 	{
-		cmd = malloc(MAX_CMD_LEN * sizeof(char));
+		cmd = malloc(max_cmd_length * sizeof(char));
 		printf("#cisfun$ ");
-		if (fgets(cmd, MAX_CMD_LEN, stdin) == NULL)
+		if (getline(&max_cmd_length, &max_cmd_length, stdin) < 0)
 		{
 			free(cmd);
 			printf("\n");
