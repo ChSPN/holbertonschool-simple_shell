@@ -21,7 +21,7 @@ int shell_execute(char *argv[])
 	{
 		execve(argv[0], argv, NULL);
 		perror("Execve failed");
-		return (1);
+		exit(1);
 	}
 	else
 	{
