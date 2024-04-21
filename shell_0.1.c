@@ -23,7 +23,7 @@ int main(void)
 		}
 		cmd[strlen(cmd) - 1] = '\0';
 		argv[0] = strtok(cmd, " ");
-		if (argv != NULL && argv[0] != NULL)
+		if (argv[0] != NULL)
 			shell_execute(argv);
 		free(cmd);
 	}

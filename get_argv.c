@@ -10,10 +10,11 @@ char **get_argv(char cmd[])
 {
 	char **argv = malloc(MAX_ARGS * sizeof(char *));
 	char *token;
+	int index;
 
 	cmd[strlen(cmd) - 1] = '\0';
 	token = strtok(cmd, " ");
-	for (int index = 0; index < MAX_ARGS; index++)
+	for (index = 0; index < MAX_ARGS; index++)
 	{
 		argv[index] = token;
 		token = strtok(NULL, " ");
