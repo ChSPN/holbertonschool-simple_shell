@@ -3,24 +3,22 @@
 /**
  * get_execute_func - Get the execute function
  * Description: Get the execute function
+ * @executes: list of actions
  * @identifier: identifier of action
  * Return: pointer of execute function
 */
-int (*get_execute_func(char *identifier))(char **)
+int (*get_execute_func(execute_t executes[], char *identifier))(char **)
 {
-	int index;
+	int index = 0;
 
-	execute_t executes[] = {
-		{"exit", exit_execute},
-		{NULL, NULL}
-	};
-
-	for (index = 0; index < 1; index++)
+	while (executes[index].identifier)
 	{
-		if (executes[index].identifier[0] == identifier[0])
+		if (strcmp(executes[index].identifier, identifier) == 0)
 		{
 			return (executes[index].ptr_execute);
 		}
+
+		index++;
 	}
 
 	return (NULL);

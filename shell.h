@@ -40,7 +40,7 @@ int shell_execute(char *argv[]);
 char **get_argv(char cmd[]);
 
  /* Prototype that select & executes function for identifier. */
-int (*get_execute_func(char *identifier))(char **);
+int (*get_execute_func(execute_t executes[], char *identifier))(char **);
 
 /**
  * exit_execute - Execute the exit
@@ -49,5 +49,16 @@ int (*get_execute_func(char *identifier))(char **);
  * Return: state of execution
 */
 int exit_execute(char *argv[]);
+
+/**
+ * printenv_execute - Print the environments variables
+ * Description: Print the environments variables
+ * @argv: list of command
+ * Return: state of execution
+*/
+int printenv_execute(char *argv[]);
+
+/* The environments variables */
+extern char **environ;
 
 #endif

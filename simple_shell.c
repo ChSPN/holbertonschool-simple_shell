@@ -14,6 +14,7 @@ int main(void)
 	int (*execute)(char **) = NULL;
 	execute_t executes[] = {
 		{"exit", exit_execute},
+		{"env", printenv_execute},
 		{ NULL, NULL }
 	};
 
@@ -40,7 +41,6 @@ int main(void)
 			else
 				shell_execute(argv);
 		}
-
 		free(argv);
 		free(cmd);
 	}
