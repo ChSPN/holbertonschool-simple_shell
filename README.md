@@ -43,10 +43,10 @@
 
 ### Testing
 **Interactive mode**
-présent dans la consigne
+présent dans la consigne, a copier
 
 **Non interactive mode**
-present dans la consigne
+present dans la consigne, a copier
 
 ### Checks
 **Coding Style**
