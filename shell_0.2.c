@@ -8,7 +8,8 @@
 int main(void)
 {
 	char cmd[MAX_CMD_LEN];
-	char *argv[2] = { NULL, NULL };
+	char *argv[MAX_ARGS];
+	char *token;
 
 	while (1)
 	{
@@ -19,7 +20,12 @@ int main(void)
 			exit(0);
 		}
 		cmd[strlen(cmd) - 1] = '\0';
-		argv[0] = strtok(cmd, " ");
+		token = strtok(cmd, " ");
+		for (int i = 0; i < MAX_ARGS; i++)
+		{
+			argv[i] = token;
+			token = strtok(NULL, " ");
+		}
 		shell_execute(argv);
 	}
 	return (0);
