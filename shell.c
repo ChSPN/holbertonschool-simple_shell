@@ -16,12 +16,14 @@ int main(void)
 		printf("#cisfun$ ");
 		if (fgets(cmd, MAX_CMD_LEN, stdin) == NULL)
 		{
+			free(cmd);
 			printf("\n");
 			exit(0);
 		}
 		cmd[strlen(cmd) - 1] = '\0';
 		argv[0] = strtok(cmd, " ");
-		shell_execute(argv);
+		if (argv != NULL && argv[0] != NULL)
+			shell_execute(argv);
 		free(cmd);
 	}
 	return (0);

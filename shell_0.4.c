@@ -9,8 +9,11 @@ int main(void)
 {
 	char *cmd;
 	char **argv;
+	int status;
+	int isExit = 0;
+	int (*execute)(char **) = NULL;
 
-	while (1)
+	while (isExit == 0)
 	{
 		cmd = malloc(MAX_CMD_LEN * sizeof(char));
 		printf("#cisfun$ ");
@@ -22,7 +25,20 @@ int main(void)
 		}
 		argv = get_argv(cmd);
 		if (argv != NULL && argv[0] != NULL)
-			shell_execute(argv);
+		{
+			execute = get_execute_func(argv[0]);
+			if (execute != NULL)
+			{
+				status = execute(argv);
+				if (status != 0)
+				{
+					isExit = 1;
+				}
+			}
+			else
+				shell_execute(argv);
+		}
+
 		free(argv);
 		free(cmd);
 	}

@@ -11,6 +11,19 @@
 #define MAX_ARGS 16
 
 /**
+* struct execute - Struct to map identifier specifiers to their functions.
+* @identifier: The action specifier.
+* @ptr_execute: Pointer to the function that handles the execution for action.
+* Description: This structure is used to associate format specifiers with
+* the corresponding function that knows how to execution that action.
+*/
+typedef struct execute
+{
+	char *identifier;
+	int (*ptr_execute)(char **);
+} execute_t;
+
+/**
  * shell_execute - Execute shell command
  * Description: Fonction to execute shell command
  * @argv: list of command
@@ -25,5 +38,16 @@ int shell_execute(char *argv[]);
  * Return: Return the list of arguments
 */
 char **get_argv(char cmd[]);
+
+ /* Prototype that select & executes function for identifier. */
+int (*get_execute_func(char *identifier))(char **);
+
+/**
+ * exit_execute - Execute the exit
+ * Description: Execute the exit
+ * @argv: list of command
+ * Return: state of execution
+*/
+int exit_execute(char *argv[]);
 
 #endif
