@@ -21,11 +21,13 @@ int main(void)
 	while (isExit == 0)
 	{
 		cmd = malloc(max_cmd_length * sizeof(char));
-		printf("#cisfun$ ");
+		if (isatty(STDIN_FILENO))
+        	printf("#cisfun$ ");
 		if (getline(&cmd, &max_cmd_length, stdin) < 0)
 		{
 			free(cmd);
-			printf("\n");
+			if (isatty(STDIN_FILENO))
+				printf("\n");
 			exit(0);
 		}
 		argv = get_argv(cmd);
