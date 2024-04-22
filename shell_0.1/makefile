@@ -24,4 +24,18 @@ $(OUTPUT): $(OBJECTS)
 
 # Rule to clean up the build
 clean:
-	rm
+	-rm -f $(OUTPUT) $(OBJECTS)
+
+# Rule for displaying help
+help:
+	@echo "Makefile for simple_shell"
+	@echo "Available commands:"
+	@echo "  all (default): Builds the simple_shell executable"
+	@echo "  clean: Removes all object files and the executable"
+	@echo "  help: Displays this help message"
+
+
+	.PHONY: all clean help
+
+all: $(OUTPUT)
+
