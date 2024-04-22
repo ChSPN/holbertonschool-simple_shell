@@ -25,4 +25,6 @@ char **parse_command(char *command);
 void execute_command(char **args);
 char *find_command_in_path(char *command);
 
+extern char **environ;
+
 #endif /* SHELL_H */

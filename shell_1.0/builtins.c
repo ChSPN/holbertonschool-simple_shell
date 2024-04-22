@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-extern char **environ;
-
 /**
 * print_env - Prints all environment variables
 */
