@@ -4,16 +4,17 @@
 #include "shell.h"
 
 /**
-* main - Entry point of the simple shell
-* Description: This function runs a loop that continually reads commands from the user,
-*              parses them, checks for the 'exit' built-in command, executes other commands,
-*              and manages memory appropriately to prevent leaks and errors.
-* Return: Returns EXIT_SUCCESS upon successful termination of the shell.
-*/
+ * main - Entry point of the simple shell
+ * Description: Runs a loop that continually reads commands from the user,
+ *              parses them, checks for the 'exit' built-in command, executes other commands,
+ *              and manages memory appropriately to prevent leaks and errors.
+ * Return: Returns EXIT_SUCCESS upon successful termination of the shell.
+ */
 int main(void)
 {
     char command[MAX_COMMAND_LENGTH]; /* Buffer to hold the command entered by the user */
     char **args;                      /* Array to hold the parsed command and its arguments */
+    int i;
 
     while (1)
     {
@@ -44,7 +45,11 @@ int main(void)
         /* Handle the 'exit' built-in command */
         if (strcmp(args[0], "exit") == 0)
         {
-            free(args); /* Free allocated memory for arguments before exiting */
+            for (i = 0; args[i] != NULL; i++)
+            {
+                free(args[i]); /* Free each argument */
+            }
+            free(args); /* Free the argument array */
             break;      /* Break the loop and exit the shell */
         }
 
@@ -52,6 +57,10 @@ int main(void)
         execute_command(args);
 
         /* Free memory allocated for the arguments after command execution */
+        for (i = 0; args[i] != NULL; i++)
+        {
+            free(args[i]); /* Free each argument */
+        }
         free(args);
     }
 
