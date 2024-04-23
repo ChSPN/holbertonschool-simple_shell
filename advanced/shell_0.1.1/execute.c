@@ -9,7 +9,10 @@ void execute(char *command)
 	pid_t pid;
 	int status;
 
-	char *argv[] = {command, NULL};
+/* Correct method to initialize in C89 instead char *argv[] = {command, NULL}*/
+char *argv[2];
+argv[0] = command;
+argv[1] = NULL;
 
 	pid = fork();
 	if (pid == 0)
