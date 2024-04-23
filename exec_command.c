@@ -7,7 +7,7 @@
 */
 void execute_command(char *full_path, char **args)
 {
-	execve(full_path, args, NULL);
+	execve(full_path, args, environ);
 	perror("Execve failed");
 	exit(1);
 }
@@ -54,9 +54,14 @@ void handle_child_process(char *command_path, char **args)
 	{
 		check_command_path(command_path, args);
 	}
-	else /* Absolute path */
+	else if (access(command_path, X_OK) == 0) /* Absolute path */
 	{
 		execute_command(command_path, args);
+	}
+	else
+	{
+		fprintf(stderr, "%s: command not found\n", command_path);
+		exit(1);
 	}
 }
 
@@ -80,7 +85,7 @@ int shell_execute(char **args)
 	}
 	if (pid == 0)
 	{
-		execute_command(args[0], args);
+		handle_child_process(args[0], args);
 	}
 	else
 	{

@@ -10,7 +10,7 @@ int main(void)
 	char *cmd;
 
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;
-	char *argv[2] = { NULL, NULL };
+	char **argv;
 
 	while (1)
 	{
@@ -24,8 +24,7 @@ int main(void)
 				printf("\n");
 			exit(0);
 		}
-		cmd[strlen(cmd) - 1] = '\0';
-		argv[0] = strtok(cmd, " ");
+		argv = get_argv(cmd); /* parse command into arguments */
 		if (argv[0] != NULL)
 			shell_execute(argv);
 		free(cmd);
