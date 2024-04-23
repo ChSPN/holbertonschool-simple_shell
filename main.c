@@ -9,14 +9,15 @@ int main(void)
 {
 	char *cmd;
 
+	char **argv;
+
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;
-	char *argv[2] = { NULL, NULL };
 
 	while (1)
 	{
 		cmd = malloc(max_cmd_length * sizeof(char));
 		if (isatty(STDIN_FILENO))
-			printf("#cisfun$ ");
+			printf(PROMPT);
 		if (getline(&cmd, &max_cmd_length, stdin) < 0)
 		{
 			free(cmd);
@@ -24,10 +25,10 @@ int main(void)
 				printf("\n");
 			exit(0);
 		}
-		cmd[strlen(cmd) - 1] = '\0';
-		argv[0] = strtok(cmd, " ");
-		if (argv[0] != NULL)
+		argv = get_argv(cmd);
+		if (argv != NULL && argv[0] != NULL)
 			shell_execute(argv);
+		free(argv);
 		free(cmd);
 	}
 	return (0);
