@@ -36,8 +36,33 @@ typedef struct execute
 */
 int shell_execute(char **args);
 
+/* handle_child_process - Handle the child process after forking
+ * @command_path: The path to the command to execute
+ * @args: Array of strings representing the command arguments
+ *
+ * This function handles the execution of a child process after forking.
+ * It takes the path to the command to execute and an array of strings
+ * representing the command arguments.
+ */
 void handle_child_process(char *command_path, char **args);
+
+/* check_command_path - Check if the command path is valid and executable
+ * @command_path: The path to the command to execute
+ * @args: Array of strings representing the command arguments
+ *
+ * This function checks if the specified command path is valid and executable.
+ * It takes the path to the command to execute and an array of strings
+ * representing the command arguments.
+ */
 void check_command_path(char *command_path, char **args);
+
+/* execute_command - Execute the command with the specified arguments
+ * @full_path: The full path to the command to execute
+ * @args: Array of strings representing the command arguments
+ *
+ * This function executes the command with the specified full path
+ * and arguments.
+ */
 void execute_command(char *full_path, char **args);
 
 
