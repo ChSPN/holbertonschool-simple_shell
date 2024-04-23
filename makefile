@@ -19,7 +19,7 @@ all: $(EXECS)
 0_4: shell_execute.c get_argv.c get_execute_func.c exit_execute.c shell_0.4.c
 	$(CC) $(CFLAGS) $^ -o $@
 
-1_0: shell_execute.c get_argv.c get_execute_func.c exit_execute.c printenv_execute.c shell_1_0.c
+1_0: shell_execute.c get_argv.c get_execute_func.c exit_execute.c printenv_execute.c shell_1.0.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 # Clean target

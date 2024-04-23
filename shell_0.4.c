@@ -1,18 +1,22 @@
 #include "shell.h"
 
 /**
- * main - simple shell function
- * Description: simple shell function
- * Return: state of simple shell execution
+* main - simple shell function
+* Description: simple shell function
+* Return: state of simple shell execution
 */
 int main(void)
 {
 	char *cmd;
+
 	char **argv;
+
 	int status;
+
 	int isExit = 0;
+
 	int (*execute)(char **) = NULL;
-	size_t max_cmd_length = 256;
+	size_t max_cmd_length = MAX_COMMAND_LENGTH;
 	execute_t executes[] = {
 		{"exit", exit_execute},
 		{ NULL, NULL }
@@ -22,7 +26,7 @@ int main(void)
 	{
 		cmd = malloc(max_cmd_length * sizeof(char));
 		if (isatty(STDIN_FILENO))
-        	printf("#cisfun$ ");
+			printf(PROMPT);
 		if (getline(&cmd, &max_cmd_length, stdin) < 0)
 		{
 			free(cmd);

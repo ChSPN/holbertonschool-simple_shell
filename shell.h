@@ -6,8 +6,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/stat.h> /* Include for struct stat and stat() */
 
 #define MAX_ARGS 16
+#define MAX_COMMAND_LENGTH 100
+#define PROMPT "$cisfun "
 
 /**
 * struct execute - Struct to map identifier specifiers to their functions.
@@ -22,13 +25,21 @@ typedef struct execute
 	int (*ptr_execute)(char **);
 } execute_t;
 
+
+
+
 /**
  * shell_execute - Execute shell command
  * Description: Fonction to execute shell command
- * @argv: list of command
+ * @args: list of command
  * Return: state of execution
 */
-int shell_execute(char *argv[]);
+int shell_execute(char **args);
+
+void handle_child_process(char *command_path, char **args);
+void check_command_path(char *command_path, char **args);
+void execute_command(char *full_path, char **args);
+
 
 /**
  * get_argv - Get the arguments values
@@ -60,4 +71,13 @@ int printenv_execute(char *argv[]);
 /* The environments variables */
 extern char **environ;
 
+/**
+* find_command_in_path - Searches for a command in the PATH env variable
+* @command: The command to find in the PATH
+* Return: Full path to the command if found, otherwise NULL
+* Description: Iterates through dir listed in PATH to find the executable
+*/
+char *find_command_in_path(char *command);
+
 #endif
+
