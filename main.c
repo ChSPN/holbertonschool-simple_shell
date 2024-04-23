@@ -1,42 +1,34 @@
 #include "shell.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
-* main - Implements a simple shell using getline
-* Description: Use getline for input handling in a simple shell.
-*              Continuously reads commands from stdin and executes them.
-* Return: Returns EXIT_SUCCESS upon termination of the shell.
+* main - simple shell function
+* Description: simple shell function
+* Return: state of simple shell execution
 */
 int main(void)
 {
-	char *command = NULL; /* buffer for the command input */
+	char *cmd;
 
-	size_t len = 0; /* length of the input buffer */
-	ssize_t nread; /* number of characters read */
-	char **args; /* argument vector for commands */
+	size_t max_cmd_length = MAX_COMMAND_LENGTH;
+	char *argv[2] = { NULL, NULL };
 
 	while (1)
 	{
-		printf(PROMPT);
-		fflush(stdout);
-
-		nread = getline(&command, &len, stdin); /* read a line from stdin */
-		if (nread == -1)
+		cmd = malloc(max_cmd_length * sizeof(char));
+		if (isatty(STDIN_FILENO))
+			printf("#cisfun$ ");
+		if (getline(&cmd, &max_cmd_length, stdin) < 0)
 		{
-			printf("\n");
-			break; /* exit on read error or EOF */
+			free(cmd);
+			if (isatty(STDIN_FILENO))
+				printf("\n");
+			exit(0);
 		}
-
-		if (nread == 1) /* skip empty commands */
-		{
-			continue;
-		}
-
-		args = get_argv(command); /* parse command into arguments */
-		shell_execute(args); /* execute the command */
+		cmd[strlen(cmd) - 1] = '\0';
+		argv[0] = strtok(cmd, " ");
+		if (argv[0] != NULL)
+			shell_execute(argv);
+		free(cmd);
 	}
-
-	free(command); /* free the allocated buffer */
-	return (EXIT_SUCCESS);
+	return (0);
 }
