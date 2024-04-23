@@ -7,7 +7,7 @@
 */
 void execute_command(char *full_path, char **args)
 {
-	execve(full_path, args, environ);
+	execve(full_path, args, NULL);
 	perror("Execve failed");
 	exit(1);
 }
@@ -80,7 +80,7 @@ int shell_execute(char **args)
 	}
 	if (pid == 0)
 	{
-		handle_child_process(args[0], args);
+		execute_command(args[0], args);
 	}
 	else
 	{
