@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
-* find_command_in_path - Searches for a command in the PATH environment variable
+* find_command_in_path - Searches for a command in the PATH env var
 * @command: The command to find in the PATH
 * Return: Full path to the command if found, otherwise NULL
-* Description: Iterates through directories listed in PATH to find the executable
+* Description: Iterates in directories listed in PATH to find the executable
 */
 char *find_command_in_path(char *command)
 {
@@ -32,7 +32,7 @@ char *find_command_in_path(char *command)
 	full_path = malloc(MAX_COMMAND_LENGTH);
 	if (full_path == NULL)
 	{
-		free(path_copy); /* Clean up allocated memory if subsequent allocation fails */
+		free(path_copy); /* Clean up allocated memory if allocation fails */
 		return (NULL);
 	}
 
@@ -45,7 +45,6 @@ char *find_command_in_path(char *command)
 			return (full_path); /* Command found, return the path */
 		}
 	}
-
 	free(path_copy);
 	free(full_path);
 	return (NULL); /* Command not found, return NULL */

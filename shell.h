@@ -25,9 +25,6 @@ typedef struct execute
 	int (*ptr_execute)(char **);
 } execute_t;
 
-
-
-
 /**
  * shell_execute - Execute shell command
  * Description: Fonction to execute shell command
@@ -36,7 +33,8 @@ typedef struct execute
 */
 int shell_execute(char **args);
 
-/* handle_child_process - Handle the child process after forking
+/**
+ *  handle_child_process - Handle the child process after forking
  * @command_path: The path to the command to execute
  * @args: Array of strings representing the command arguments
  *
@@ -46,7 +44,8 @@ int shell_execute(char **args);
  */
 void handle_child_process(char *command_path, char **args);
 
-/* check_command_path - Check if the command path is valid and executable
+/**
+ *  check_command_path - Check if the command path is valid and executable
  * @command_path: The path to the command to execute
  * @args: Array of strings representing the command arguments
  *
@@ -56,7 +55,8 @@ void handle_child_process(char *command_path, char **args);
  */
 void check_command_path(char *command_path, char **args);
 
-/* execute_command - Execute the command with the specified arguments
+/**
+ *  execute_command - Execute the command with the specified arguments
  * @full_path: The full path to the command to execute
  * @args: Array of strings representing the command arguments
  *
