@@ -18,13 +18,17 @@ int main(void)
 
 	while (1)
 	{
-		printf(PROMPT);
-		fflush(stdout);
+		if (isatty(STDIN_FILENO))
+		{
+			printf(PROMPT);
+			fflush(stdout);
+		}
 
 		nread = getline(&command, &len, stdin); /* read a line from stdin */
 		if (nread == -1)
 		{
-			printf("\n");
+			if (isatty(STDIN_FILENO))
+				printf("\n");
 			break; /* exit on read error or EOF */
 		}
 
