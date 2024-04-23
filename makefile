@@ -1,5 +1,12 @@
+# Default compiler
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -pedantic -std=gnu89
+
+# Check if CLANG variable is set
+ifdef CLANG
+    CC = clang
+    CFLAGS += -fsanitize=address -g
+endif
 
 EXECS = 0_1 0_2 0_3 0_4 1_0
 
@@ -25,3 +32,4 @@ all: $(EXECS)
 # Clean target
 clean:
 	rm -f $(EXECS)
+	rm -rf $(addsuffix .dSYM,$(EXECS))
