@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+
 /* Macros */
 #define PROMPT "$ "
 
@@ -19,5 +20,7 @@ extern char **environ;
 void prompt_loop(void);
 void execute(char *command);
 void print_error(void);
+
+ssize_t my_getline(char **lineptr, size_t *n);
 
 #endif /* SHELL_H */

@@ -21,7 +21,7 @@ void prompt_loop(void)
 	while (1)
 	{
 		display_prompt();
-		read = getline(&line, &len, stdin);
+		read = my_getline(&line, &len);
 		if (read == -1)
 		{
 			if (feof(stdin))
