@@ -16,7 +16,7 @@ void execute_command(char *full_path, char **args)
 }
 
 /**
-* check_command_path - Resolves the path of a cmd using the PATH env variable.
+* check_command_path - Resolves the path of a cmd using the PATH env var.
 * @command_path: The command to be executed.
 * @args: Command arguments.
 *
@@ -30,7 +30,7 @@ void check_command_path(char *command_path, char **args)
 
 	char *path_value;
 
-	char full_path[256];
+	char full_path[256]; /* Buffer to store the full path of the command */
 
 	if (path == NULL)
 	{
@@ -82,7 +82,6 @@ void handle_child_process(char *command_path, char **args)
 		fprintf(stderr, "%s: command not found\n", command_path);
 		exit(1);
 	}
-	free(args);
 }
 
 /**
@@ -102,7 +101,7 @@ int shell_execute(char **args)
 	if (pid < 0)
 	{
 		perror("Fork failed");
-		free(args); /* Free args before returning */
+		free(args); /* Free args before returning on error */
 		return (-1);
 	}
 	if (pid == 0)
@@ -121,7 +120,7 @@ int shell_execute(char **args)
 				break;
 			}
 		}
+		free(args); /* Free args after completion */
+		return (0);
 	}
-	free(args); /* Free args after completion */
-	return (0);
 }

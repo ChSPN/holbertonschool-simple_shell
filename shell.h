@@ -119,5 +119,11 @@ char *find_command_in_path(char *path, char *command);
 
 void free_memory(char **args, char *path);
 
+/**
+ * free_argv - simple free func
+ * @argv: Arg array
+*/
+void free_argv(char **argv);
+
 #endif
 
