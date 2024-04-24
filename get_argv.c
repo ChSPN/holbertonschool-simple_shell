@@ -1,40 +1,53 @@
 #include "shell.h"
 
-#include "shell.h"
-#include <string.h>
-#include <stdlib.h>
-
 /**
-* get_argv - Get the arguments values
-* Description: Parse a command string into an array of arguments.
-* @cmd: string of command
-* Return: Returns the list of arguments.
-*/
+ * get_argv - Get the arguments values
+ * Description: Parse a command string into an array of arguments.
+ * @cmd: string of command
+ * Return: Returns the list of arguments.
+ */
+
 char **get_argv(char cmd[])
 {
-	char **argv = malloc(MAX_ARGS * sizeof(char *));
-	/* Allocate memory for array of pointers to arguments */
+	char **argv = (char **)malloc((MAX_ARGS + 1) * sizeof(char *));
+	int argc = 0;
+	char *start = cmd;
+	char *end, *token, *quote_end;
 
-	char *token; /* Pointer to hold each parsed token */
-
-	int index; /* Index for the loop to store each argument in argv */
-
-	cmd[strlen(cmd) - 1] = '\0';
-	/* Remove the newline character at the end of the cmd string */
-	token = strtok(cmd, " ");
-	/* Get the first token from the cmd string, tokens are separated by spaces */
-
-	for (index = 0; index < MAX_ARGS; index++)
-	/* Iterate through all possible arguments up to MAX_ARGS */
+	if (argv == NULL)
 	{
-		argv[index] = token; /* Store the current token in the argv array */
-		token = strtok(NULL, " ");
-		/* Continue to tokenize the string, get next token */
-		if (token == NULL) /* If there are no more tokens, break the loop */
-		{
-			break;
-		}
+		fprintf(stderr, "Failed to allocate memory for argv\n");
+		exit(EXIT_FAILURE);
 	}
+	while ((token = strtok_r(start, " ", &end)) != NULL && argc < MAX_ARGS)
+	{
+		if (token[0] == '"') /* Check if the token starts with a quote */
+		{
+			char *quote_end = strchr(token + 1, '"');
 
-	return (argv); /* Return the array of arguments */
+			if (quote_end == NULL)
+			{
+				fprintf(stderr, "Unmatched quote in command: %s\n", cmd);
+				exit(EXIT_FAILURE);
+			}
+			argv[argc++] = strndup(token + 1, quote_end - token - 1);
+			if (argv[argc - 1] == NULL)
+			{
+				fprintf(stderr, "Failed to allocate memory for argument\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			argv[argc++] = strdup(token);
+			if (argv[argc - 1] == NULL)
+			{
+				fprintf(stderr, "Failed to allocate memory for argument\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+		start = NULL; /* For subsequent calls to strtok_r */
+	}
+	argv[argc] = NULL;
+	return (argv);
 }

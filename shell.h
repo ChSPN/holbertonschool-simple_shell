@@ -9,7 +9,7 @@
 #include <sys/stat.h> /* Include for struct stat and stat() */
 #include <errno.h>
 
-#define MAX_ARGS 16
+#define MAX_ARGS 64
 #define MAX_COMMAND_LENGTH 100
 #define PROMPT "$cisfun "
 
