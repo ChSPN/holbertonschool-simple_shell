@@ -21,24 +21,24 @@ void execute_command(char *full_path, char **args)
 * @args: Command arguments.
 *
 * Description: Searches the PATH environment variable to find
-* the full path of the command. If found, it executes the command.
-* Otherwise, it prints an error message and exits.
+* the full path of the command. If found and executable, it executes the cmd.
+* Returns 1 if the command is found and executed, otherwise 0.
+*
+* Return: Returns 1 if the command is found and executed, otherwise 0.
 */
-void check_command_path(char *command_path, char **args)
+int check_command_path(char *command_path, char **args)
 {
 	char *path = getenv("PATH");
 
 	char *path_value;
 
-	char full_path[256]; /* Buffer to store the full path of the command */
+	char full_path[256];
 
 	if (path == NULL)
 	{
-		fprintf(stderr, "PATH not set\n");
-		exit(1);
+		return (0);
 	}
 
-	/* Tokenize the PATH and construct full paths to check for the command */
 	path_value = strtok(path, ":");
 	while (path_value != NULL)
 	{
@@ -49,14 +49,13 @@ void check_command_path(char *command_path, char **args)
 		if (access(full_path, X_OK) == 0)
 		{
 			execute_command(full_path, args);
-			return; /* Exit if command is successfully executed */
+			return (1); /* Command exists and was executed */
 		}
 
 		path_value = strtok(NULL, ":");
 	}
 
-	fprintf(stderr, "%s: command not found\n", command_path);
-	exit(1);
+	return (0); /* Command does not exist */
 }
 
 /**
@@ -65,24 +64,28 @@ void check_command_path(char *command_path, char **args)
 * @args: Command arguments.
 *
 * Description: Decides how to execute the command based on whether
-* it's an absolute path or needs path resolution.
+* it's an absolute path or needs path resolution. It prints "command not found"
+* error once if the command does not exist.
 */
 void handle_child_process(char *command_path, char **args)
 {
-	if (command_path[0] != '/') /* Not an absolute path */
+	if (command_path[0] != '/')
 	{
-		check_command_path(command_path, args);
+		if (!check_command_path(command_path, args)) /* Check if command exists */
+		{
+			fprintf(stderr, "%s: command not found\n", command_path);
+			exit(1);
+		}
 	}
-	else if (access(command_path, X_OK) == 0) /* Absolute path is executable */
-	{
-		execute_command(command_path, args);
-	}
-	else
+	else if (access(command_path, X_OK) != 0) /* Check if abs path is not exec */
 	{
 		fprintf(stderr, "%s: command not found\n", command_path);
 		exit(1);
 	}
+
+	execute_command(command_path, args);
 }
+
 
 /**
 * shell_execute - Executes commands provided by args.
@@ -98,20 +101,19 @@ int shell_execute(char **args)
 	int status;
 
 	pid = fork();
-	if (pid < 0)
+	if (pid < 0) /* Check if fork was successful */
 	{
 		perror("Fork failed");
-		free(args); /* Free args before returning on error */
 		return (-1);
 	}
-	if (pid == 0)
+	if (pid == 0) /* Child process */
 	{
 		handle_child_process(args[0], args); /* Child process handling */
-		exit(0); /* Exit explicitly after handling */
+		exit(0); /* Ensure child process exits after execution */
 	}
-	else
+	else /* Parent process */
 	{
-		/* Parent process waits for the child to complete */
+		/* Parent waits for the child to complete */
 		while (waitpid(pid, &status, 0) != pid)
 		{
 			if (errno != EINTR)
@@ -120,7 +122,6 @@ int shell_execute(char **args)
 				break;
 			}
 		}
-		free(args); /* Free args after completion */
 		return (0);
 	}
 }

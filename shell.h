@@ -49,16 +49,20 @@ int shell_execute(char **args);
 */
 void handle_child_process(char *command_path, char **args);
 
+
 /**
-* check_command_path - Resolves the path of a cmd using the PATH env variable.
+* check_command_path - Resolves the path of a cmd using the PATH env var.
 * @command_path: The command to be executed.
 * @args: Command arguments.
 *
-* Description: Searches the PATH environment variable to find
-* the full path of the command. If found, it executes the command.
-* Otherwise, it prints an error message and exits.
+* Description: This function searches the PATH environment variable to find
+* the full path of the command. If found, it executes the command using
+* `execute_command` function. It returns true if the command is successfully
+* executed or false if the command is not found in the PATH.
+*
+* Return: Returns 1 if the command is found and executed, otherwise 0.
 */
-void check_command_path(char *command_path, char **args);
+int check_command_path(char *command_path, char **args);
 
 /**
  *  execute_command - Execute the command with the specified arguments

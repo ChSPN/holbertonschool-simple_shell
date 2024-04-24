@@ -10,47 +10,51 @@
  */
 int main(void)
 {
-	char *cmd;  /* Buffer for command input */
-	char **args;  /* Array of pointers for command arguments */
-	size_t max_cmd_length = MAX_COMMAND_LENGTH;  /* Maximum input length */
-	ssize_t read;  /* Number of characters read by getline */
+    char *cmd; /* Buffer for command input */
+    char **args; /* Array of pointers for command arguments */
+    size_t max_cmd_length = MAX_COMMAND_LENGTH; /* Maximum input length */
+    ssize_t read; /* Number of characters read by getline */
 
-	while (1)
-	{
-		cmd = malloc(max_cmd_length * sizeof(char));  /* Alloc memory: input cmd */
-		if (cmd == NULL)  /* Check for malloc failure */
-		{
-			fprintf(stderr, "Memory allocation failed\n");
-			continue;  /* Skip to the next iteration */
-		}
+    while (1)
+    {
+        cmd = malloc(max_cmd_length * sizeof(char)); /* Allocate memory for the input command */
+        if (cmd == NULL) /* Check for malloc failure */
+        {
+            fprintf(stderr, "Memory allocation failed\n");
+            continue; /* Skip to the next iteration */
+        }
 
-		if (isatty(STDIN_FILENO))  /* Check if stdin is a terminal */
-		{
-			printf(PROMPT);  /* Print prompt */
-		}
+        if (isatty(STDIN_FILENO)) /* Check if stdin is a terminal */
+        {
+            printf(PROMPT); /* Print prompt */
+        }
 
-		read = getline(&cmd, &max_cmd_length, stdin);  /* Read a line of input */
-		if (read < 0)  /* Check for read error or EOF */
-		{
-			free(cmd);  /* Free command buffer */
-			if (isatty(STDIN_FILENO))
-			{
-				printf("\n");  /* Print newline on exit */
-			}
-			break;  /* Exit the loop */
-		}
-		args = get_argv(cmd);  /* Parse command into arguments */
-		if (args && args[0] != NULL && cmd)
-		{
-			shell_execute(args);  /* Execute the command */
-		}
-		/* free_argv(args);  Free the arguments */
-		args = NULL;
-		free(cmd);  /* Free the command buffer */
-		cmd = NULL;
-	}
-	return (0);  /* Return success */
+        read = getline(&cmd, &max_cmd_length, stdin); /* Read a line of input */
+        if (read < 0) /* Check for read error or EOF */
+        {
+            free(cmd); /* Free command buffer */
+            if (isatty(STDIN_FILENO))
+            {
+                printf("\n"); /* Print newline on exit */
+            }
+            break; /* Exit the loop */
+        }
+
+        args = get_argv(cmd); /* Parse command into arguments */
+        if (args && args[0] != NULL)
+        {
+            shell_execute(args); /* Execute the command */
+        }
+
+        /* free_argv(args); Free the arguments */
+        args = NULL;
+        free(cmd); /* Free the command buffer */
+        cmd = NULL;
+    }
+
+    return 0; /* Return success */
 }
+
 
 /**
  * free_argv - Frees an array of strings
