@@ -2,14 +2,13 @@
 
 /**
 * find_command_in_path - Searches for a command in the PATH env var
+* @path: The PATH environment variable
 * @command: The command to find in the PATH
 * Return: Full path to the command if found, otherwise NULL
 * Description: Iterates in directories listed in PATH to find the executable
 */
-char *find_command_in_path(char *command)
+char *find_command_in_path(char *path, char *command)
 {
-	char *path = getenv("PATH");
-
 	char *path_copy;
 
 	char *dir;

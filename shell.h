@@ -97,12 +97,22 @@ int printenv_execute(char *argv[]);
 extern char **environ;
 
 /**
-* find_command_in_path - Searches for a command in the PATH env variable
+* find_command_in_path - Searches for a command in the PATH env var
+* @path: The PATH environment variable
 * @command: The command to find in the PATH
 * Return: Full path to the command if found, otherwise NULL
-* Description: Iterates through dir listed in PATH to find the executable
+* Description: Iterates in directories listed in PATH to find the executable
 */
-char *find_command_in_path(char *command);
+char *find_command_in_path(char *path, char *command);
+
+/**
+ * free_memory - Frees memory allocated for command arguments and path.
+ *
+ * @args: Double pointer to the array of command arguments.
+ * @path: Pointer to the string representing the executable path.
+ */
+
+void free_memory(char **args, char *path);
 
 #endif
 

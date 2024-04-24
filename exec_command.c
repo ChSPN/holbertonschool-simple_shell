@@ -63,7 +63,9 @@ void handle_child_process(char *command_path, char **args)
 		fprintf(stderr, "%s: command not found\n", command_path);
 		exit(1);
 	}
+	free_memory(args, NULL); /* Free args only */
 }
+
 
 /**
 * shell_execute - Executes commands provided by args
@@ -81,19 +83,22 @@ int shell_execute(char **args)
 	if (pid < 0)
 	{
 		perror("Fork failed");
-		return (1);
+		free(args); /* Free args before returning */
+		return (-1);
 	}
 	if (pid == 0)
 	{
-		handle_child_process(args[0], args);
+		handle_child_process(args[0], args); /* Child process handling */
 	}
 	else
 	{
 		if (waitpid(pid, &status, 0) != pid)
 		{
 			perror("Waitpid failed");
-			return (1);
+			free(args); /* Free args on parent side if wait fails */
+			return (-1);
 		}
 	}
+	free(args); /* Free args after wait succeeds */
 	return (0);
 }

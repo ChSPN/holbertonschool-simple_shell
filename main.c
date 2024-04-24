@@ -16,7 +16,7 @@ int main(void)
 	{
 		cmd = malloc(max_cmd_length * sizeof(char));
 		if (isatty(STDIN_FILENO))
-			printf("#cisfun$ ");
+			printf(PROMPT);
 		if (getline(&cmd, &max_cmd_length, stdin) < 0)
 		{
 			free(cmd);
