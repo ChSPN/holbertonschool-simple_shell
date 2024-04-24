@@ -89,39 +89,79 @@ void handle_child_process(char *command_path, char **args)
 
 /**
 * shell_execute - Executes commands provided by args.
-* @args: An array of strings where the 1st is the cmd and the rest are params.
-* Return: State of execution, 0 on success, -1 on error.
+* @args: An array of strings where the first is the cmd and the rest are params
+* Description: This function orchestrates the execution of a command
+* by first checking if it is a built-in command. If it is, the corresponding
+* built-in function is executed. If not, it proceeds to create a child process
+* to execute the command externally. It handles errors in forking and waits
+* for the child process to complete.
 *
-* Description: This function creates a child process to execute a command.
-* It handles errors in forking and waits for the child process to complete.
+* Return: Returns 0 if the command execution completes successfully, -1 if
+* there is an error with forking or if waiting for the child process fails.
 */
 int shell_execute(char **args)
+{
+	builtin_t *builtins;
+	int i;
+
+	if (args[0] == NULL)
+	{
+		return (0);  /* No command entered. */
+	}
+
+	builtins = get_builtins();  /* Retrieve the array of built-in commands */
+
+	/* Check for built-in commands first */
+	for (i = 0; builtins[i].name != NULL; i++)
+	{
+		if (strcmp(args[0], builtins[i].name) == 0)
+		{
+			return (builtins[i].func(args));  /* Execute the matched built-in function*/
+		}
+	}
+
+	/* If command is not built-in, execute it as an external command */
+	return (execute_external_command(args));
+}
+
+/**
+* execute_external_command - Handles the execution of external commands.
+* @args: Command arguments including the command itself.
+*
+* Description: Forks the process and executes the external command. The parent
+* process waits for the completion of the child.
+*
+* Return: 0 on success, -1 on failure.
+*/
+int execute_external_command(char **args)
 {
 	pid_t pid;
 	int status;
 
 	pid = fork();
-	if (pid < 0) /* Check if fork was successful */
+	if (pid == -1)
 	{
 		perror("Fork failed");
 		return (-1);
-	}
-	if (pid == 0) /* Child process */
+	} else if (pid == 0)
 	{
-		handle_child_process(args[0], args); /* Child process handling */
-		exit(0); /* Ensure child process exits after execution */
-	}
-	else /* Parent process */
+		/* Child process: execute the command */
+		if (execvp(args[0], args) == -1)
+		{
+			perror("Execution failed");
+			exit(EXIT_FAILURE);
+		}
+	} else
 	{
-		/* Parent waits for the child to complete */
+		/* Parent process: wait for the child to finish */
 		while (waitpid(pid, &status, 0) != pid)
 		{
 			if (errno != EINTR)
 			{
-				perror("Waitpid failed");
-				break;
+				perror("Wait failed");
+				return (-1);
 			}
 		}
-		return (0);
 	}
+	return (0);
 }
