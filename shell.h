@@ -7,10 +7,14 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/stat.h> /* Include for struct stat and stat() */
+#include <errno.h>
 
 #define MAX_ARGS 16
 #define MAX_COMMAND_LENGTH 100
 #define PROMPT "$cisfun "
+
+extern char **environ; /* Use of global environment variable 'environ' */
+
 
 /**
 * struct execute - Struct to map identifier specifiers to their functions.
@@ -26,33 +30,34 @@ typedef struct execute
 } execute_t;
 
 /**
- * shell_execute - Execute shell command
- * Description: Fonction to execute shell command
- * @args: list of command
- * Return: state of execution
+* shell_execute - Executes commands provided by args.
+* @args: An array of strings where the 1st is the cmd and the rest are params.
+* Return: State of execution, 0 on success, -1 on error.
+*
+* Description: This function creates a child process to execute a command.
+* It handles errors in forking and waits for the child process to complete.
 */
 int shell_execute(char **args);
 
 /**
- *  handle_child_process - Handle the child process after forking
- * @command_path: The path to the command to execute
- * @args: Array of strings representing the command arguments
- *
- * This function handles the execution of a child process after forking.
- * It takes the path to the command to execute and an array of strings
- * representing the command arguments.
- */
+* handle_child_process - Handles the child process execution logic.
+* @command_path: The command to be executed.
+* @args: Command arguments.
+*
+* Description: Decides how to execute the command based on whether
+* it's an absolute path or needs path resolution.
+*/
 void handle_child_process(char *command_path, char **args);
 
 /**
- *  check_command_path - Check if the command path is valid and executable
- * @command_path: The path to the command to execute
- * @args: Array of strings representing the command arguments
- *
- * This function checks if the specified command path is valid and executable.
- * It takes the path to the command to execute and an array of strings
- * representing the command arguments.
- */
+* check_command_path - Resolves the path of a cmd using the PATH env variable.
+* @command_path: The command to be executed.
+* @args: Command arguments.
+*
+* Description: Searches the PATH environment variable to find
+* the full path of the command. If found, it executes the command.
+* Otherwise, it prints an error message and exits.
+*/
 void check_command_path(char *command_path, char **args);
 
 /**

@@ -1,33 +1,53 @@
 #include "shell.h"
 
 /**
-* main - simple shell function
-* Description: simple shell function
-* Return: state of simple shell execution
+* main - Simple shell function
+* Description: Acts as the entry point for a simple shell.
+* It continuously reads commands from the user, parses them, and executes
+* using the shell_execute function.
+*
+* Return: Returns 0 under normal circumstances, though typically doesn't exit.
 */
 int main(void)
 {
 	char *cmd;
-
+	char **args;
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;
-	char **argv;
+	int read;
 
 	while (1)
 	{
 		cmd = malloc(max_cmd_length * sizeof(char));
+		if (cmd == NULL)
+		{
+			fprintf(stderr, "Memory allocation failed\n");
+			continue;
+		}
+
 		if (isatty(STDIN_FILENO))
+		{
 			printf(PROMPT);
-		if (getline(&cmd, &max_cmd_length, stdin) < 0)
+		}
+
+		read = getline(&cmd, &max_cmd_length, stdin);
+		if (read < 0)
 		{
 			free(cmd);
 			if (isatty(STDIN_FILENO))
+			{
 				printf("\n");
-			exit(0);
+			}
+			break;
 		}
-		argv = get_argv(cmd); /* parse command into arguments */
-		if (argv[0] != NULL)
-			shell_execute(argv);
+
+		args = get_argv(cmd);
+		if (args && args[0] != NULL)
+		{
+			shell_execute(args);
+		}
+
 		free(cmd);
 	}
+
 	return (0);
 }
