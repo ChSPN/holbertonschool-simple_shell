@@ -13,7 +13,7 @@ int main(void)
 	char *cmd;  /* Buffer for command input */
 	char **args;  /* Array of pointers for command arguments */
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;  /* Maximum input length */
-	int read;  /* Number of characters read by getline */
+	ssize_t read;  /* Number of characters read by getline */
 
 	while (1)
 	{
@@ -40,7 +40,7 @@ int main(void)
 			break;  /* Exit the loop */
 		}
 		args = get_argv(cmd);  /* Parse command into arguments */
-		if (args && args[0] != NULL)
+		if (args && args[0] != NULL && cmd)
 		{
 			shell_execute(args);  /* Execute the command */
 		}
