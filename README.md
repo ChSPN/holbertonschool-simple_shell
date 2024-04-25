@@ -13,7 +13,7 @@ The man page is a file wich explains in detail how Simple Shell works. If you wa
 [le lien vers le man]
 
 ## Flowchart
-!(diagramme_simple_shell-Page-1.jpg)
+![Flowchart](diagramme_simple_shell-Page-1.jpg)
 
 ## List of  mantory tasks
 
