@@ -13,7 +13,7 @@ The man page is a file wich explains in detail how Simple Shell works. If you wa
 [le lien vers le man]
 
 ## Flowchart
-[à inserer]
+!(diagramme_simple_shell-Page-1.jpg)
 
 ## List of  mantory tasks
 
@@ -27,7 +27,7 @@ The man page is a file wich explains in detail how Simple Shell works. If you wa
 
 ## List of advanced tasks
 
-7. **What happens when you type `ls -l *.c` in the shell :** Write a blog post describing step by step what happens when you type ls -l *.c and hit Enter in a shell. Try to explain every step you know of, going in as much details as you can, give examples and draw diagrams when needed. You should merge your previous knowledge of the shell with the specifics of how it works under the hoods (including syscalls).
+7. **What happens when you type `ls -l *.c` in the shell :** Write a blog post describing step by step what happens when you type `ls -l *.c` and hit Enter in a shell. Try to explain every step you know of, going in as much details as you can, give examples and draw diagrams when needed. You should merge your previous knowledge of the shell with the specifics of how it works under the hoods (including syscalls).
 8. **Test suite :** Contribute to a test suite for your shell.
 9. **Simple shell 0.1.1 :** Simple shell 0.1 + Write your own getline function + Use a buffer to read many chars at once and call the least possible the read system call + You will need to use static variables + You are not allowed to use getline.
 10. **Simple shell 0.2.1 :** Simple shell 0.2 + You are not allowed to use strtok.
@@ -74,7 +74,7 @@ Betty style for both coding and documentation.
 ## REQUIREMENTS
 
 - **Allowed editors :** vi, vim, emacs
-- All your files will be compiled on Ubuntu 20.04 LTS using gcc, using the options -Wall -Werror -Wextra -pedantic -std=gnu89
+- All your files will be compiled on Ubuntu 20.04 LTS using gcc, using the options `-Wall -Werror -Wextra -pedantic -std=gnu89`
 - All your files should end with a new line
 - A README.md file, at the root of the folder of the project is mandatory
 - Your code should use the Betty style. It will be checked using betty-style.pl and betty-doc.pl
