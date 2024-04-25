@@ -55,10 +55,10 @@ The man page is a file wich explains in detail how Simple Shell works. If you wa
 ### Testing
 
 **Interactive mode**
-[present dans la consigne, a copier]
+![Flowchart](testing_interactive_mode.jpg)
 
 **Non interactive mode**
-[present dans la consigne, a copier]
+![Flowchart](testing_non_interactive_mode.jpg)
 
 ### Checks
 
