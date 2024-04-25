@@ -24,7 +24,7 @@ int main(void)
 	char *cmd;
 	char **args;
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;
-	int read;
+	ssize_t read;
 	int (*execute)(char **) = NULL;
 	execute_t executes[] = { {"exit", exit_execute}, {NULL, NULL} };
 

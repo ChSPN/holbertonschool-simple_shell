@@ -23,22 +23,23 @@ void execute_command(char *full_path, char **args)
 * Description: Searches the PATH environment variable to find
 * the full path of the command. If found, it executes the command.
 * Otherwise, it prints an error message and exits.
+* Return: Returns the full path of the command if found, otherwise NULL.
 */
-void check_command_path(char *command_path, char **args)
+char *check_command_path(char *command_path, char **args)
 {
-	char *path = getenv("PATH");
 
-	char *path_value;
+	char *path = _getenv("PATH"); /* Declare variables at the start */
+    char *path_value;
+    static char full_path[256];   /* Using static to return local array */
+	(void) args;
 
-	char full_path[256];
 
 	if (path == NULL)
 	{
 		fprintf(stderr, "PATH not set\n");
-		exit(1);
+		return (NULL);
 	}
 
-	/* Tokenize the PATH and construct full paths to check for the command */
 	path_value = strtok(path, ":");
 	while (path_value != NULL)
 	{
@@ -48,15 +49,13 @@ void check_command_path(char *command_path, char **args)
 
 		if (access(full_path, X_OK) == 0)
 		{
-			execute_command(full_path, args);
-			return; /* Exit if command is successfully executed */
+			return (full_path);
 		}
 
 		path_value = strtok(NULL, ":");
 	}
 
-	fprintf(stderr, "%s: command not found\n", command_path);
-	exit(1);
+	return (NULL);
 }
 
 /**
@@ -90,38 +89,60 @@ void handle_child_process(char *command_path, char **args)
 * @args: An array of strings where the 1st is the cmd and the rest are params.
 * Return: State of execution, 0 on success, -1 on error.
 *
-* Description: This function creates a child process to execute a command.
-* It handles errors in forking and waits for the child process to complete.
+* Description: This function checks if a command can be executed before
+* creating a child process.
 */
 int shell_execute(char **args)
 {
-	pid_t pid;
-	int status;
+    char *command_path = args[0];
+    char *full_path;
+    pid_t pid;
+    int status;
 
-	pid = fork();
-	if (pid < 0)
-	{
-		perror("Fork failed");
-		free(args); /* Free args before returning */
-		return (-1);
-	}
-	if (pid == 0)
-	{
-		handle_child_process(args[0], args); /* Child process handling */
-		exit(0); /* Exit explicitly after handling */
-	}
-	else
-	{
-		/* Parent process waits for the child to complete */
-		while (waitpid(pid, &status, 0) != pid)
-		{
-			if (errno != EINTR)
-			{
-				perror("Waitpid failed");
-				break;
-			}
-		}
-	}
-	free(args); /* Free args after completion */
-	return (0);
+    /* Check if the command exists before forking */
+    if (command_path[0] != '/') /* Not an absolute path */
+    {
+        full_path = check_command_path(command_path, args);
+    }
+    else if (access(command_path, X_OK) == 0) /* Absolute path is executable */
+    {
+        full_path = command_path;
+    }
+    else
+    {
+        fprintf(stderr, "%s: command not found\n", command_path);
+        return -1;
+    }
+
+    if (full_path == NULL)
+    {
+        fprintf(stderr, "%s: command not found\n", command_path);
+        return -1;
+    }
+
+    pid = fork();
+    if (pid < 0)
+    {
+        perror("Fork failed");
+        return (-1);
+    }
+    if (pid == 0)
+    {
+        execute_command(full_path, args); /* Child process handling */
+        exit(0); /* Exit explicitly after handling */
+    }
+    else
+    {
+        /* Parent process waits for the child to complete */
+        while (waitpid(pid, &status, 0) != pid)
+        {
+            if (errno != EINTR)
+            {
+                perror("Waitpid failed");
+                break;
+            }
+        }
+    }
+
+    return (0);
 }
