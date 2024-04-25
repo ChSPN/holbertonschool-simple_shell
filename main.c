@@ -34,7 +34,7 @@ int main(void)
 		if (cmd == NULL)
 		{
 			fprintf(stderr, "Memory allocation failed\n");
-			continue;
+			exit(0);
 		}
 		printf_sdtin(PROMPT);
 		read = getline(&cmd, &max_cmd_length, stdin);
@@ -42,7 +42,7 @@ int main(void)
 		{
 			free(cmd);
 			printf_sdtin("\n");
-			break;
+			continue;
 		}
 		args = get_argv(cmd);
 		if (args && args[0] != NULL)
@@ -54,7 +54,7 @@ int main(void)
 				free(args);
 				exit(0);
 			}
-			else
+			else if (execute == NULL)
 				shell_execute(args);
 		}
 		free(cmd);
