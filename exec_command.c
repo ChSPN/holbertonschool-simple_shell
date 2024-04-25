@@ -1,12 +1,11 @@
 #include "shell.h"
 
 /**
-* execute_command - Executes a command with given path and args.
-* @full_path: The full path to the executable.
-* @args: Command arguments.
+* execute_command - Executes a command with given path and args
+* @full_path: The full path to the executable
+* @args: Command arguments
 *
-* Description: This function uses execve to run the command.
-* If execve fails, it prints an error message and exits.
+* Return: This function does not return
 */
 void execute_command(char *full_path, char **args)
 {
@@ -16,60 +15,68 @@ void execute_command(char *full_path, char **args)
 }
 
 /**
-* check_command_path - Resolves the path of a cmd using the PATH env variable.
-* @command_path: The command to be executed.
-* @args: Command arguments.
+* find_executable_path - Determines if a command exists and finds its path
+* @command: The command to be executed
+* @resolved_path: Buffer to store the resolved path if command exists
 *
-* Description: Searches the PATH environment variable to find
-* the full path of the command. If found, it executes the command.
-* Otherwise, it prints an error message and exits.
+* Return: (1) if command is found and executable, (0) otherwise
 */
-void check_command_path(char *command_path, char **args)
+int find_executable_path(char *command, char *resolved_path)
 {
-	char *path = _getenv("PATH");
-	char *path_value;
-	char full_path[256];
+	char *path_env;
 
-	if (path == NULL)
+	char path_copy[1024];
+
+	char *saveptr;
+
+	char *path_value;
+
+	path_env = _getenv("PATH");
+	if (path_env == NULL)
 	{
-		fprintf(stderr, "PATH not set\n");
-		exit(1);
+		return (0);
 	}
 
-	/* Tokenize the PATH and construct full paths to check for the command */
-	path_value = strtok(path, ":");
+	/* Make a copy of the PATH env to avoid modifying the original */
+	strncpy(path_copy, path_env, sizeof(path_copy) - 1);
+	path_copy[sizeof(path_copy) - 1] = '\0';
+
+	path_value = _strtok_r(path_copy, ":", &saveptr);
 	while (path_value != NULL)
 	{
-		strcpy(full_path, path_value);
-		strcat(full_path, "/");
-		strcat(full_path, command_path);
-
-		if (access(full_path, X_OK) == 0)
+		snprintf(resolved_path, 256, "%s/%s", path_value, command);
+		if (access(resolved_path, X_OK) == 0)
 		{
-			execute_command(full_path, args);
-			return; /* Exit if command is successfully executed */
+			return (1);
 		}
-
-		path_value = strtok(NULL, ":");
+		path_value = _strtok_r(NULL, ":", &saveptr);
 	}
 
-	fprintf(stderr, "%s: command not found\n", command_path);
-	exit(1);
+	return (0);
 }
 
 /**
-* handle_child_process - Handles the child process execution logic.
-* @command_path: The command to be executed.
-* @args: Command arguments.
+* handle_child_process - Handles the child process execution logic
+* @command_path: The command to be executed
+* @args: Command arguments
 *
-* Description: Decides how to execute the command based on whether
-* it's an absolute path or needs path resolution.
+* Return: None
 */
 void handle_child_process(char *command_path, char **args)
 {
+	char resolved_path[256];
+
 	if (command_path[0] != '/') /* Not an absolute path */
 	{
-		check_command_path(command_path, args);
+		if (find_executable_path(command_path, resolved_path))
+		{
+			execute_command(resolved_path, args);
+		}
+		else
+		{
+			fprintf(stderr, "%s: command not found\n", command_path);
+			exit(1);
+		}
 	}
 	else if (access(command_path, X_OK) == 0) /* Absolute path is executable */
 	{
@@ -84,12 +91,10 @@ void handle_child_process(char *command_path, char **args)
 }
 
 /**
-* shell_execute - Executes commands provided by args.
-* @args: An array of strings where the 1st is the cmd and the rest are params.
-* Return: State of execution, 0 on success, -1 on error.
+* shell_execute - Executes commands provided by args
+* @args: An array of strings where the 1st is the cmd and the rest are params
 *
-* Description: This function creates a child process to execute a command.
-* It handles errors in forking and waits for the child process to complete.
+* Return: State of execution, 0 on success, -1 on error
 */
 int shell_execute(char **args)
 {

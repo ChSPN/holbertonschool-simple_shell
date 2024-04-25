@@ -119,7 +119,7 @@ char *find_command_in_path(char *path, char *command);
 
 void free_memory(char **args, char *path);
 
-/* in env. */
+/* in env.c */
 
 /**
 * _getenv - Retrieves the value of an environment variable.
@@ -127,6 +127,10 @@ void free_memory(char **args, char *path);
 * Return: Pointer to the value part of the matched environment variable string.
 */
 char *_getenv(const char *name);
+
+/* in strings.c */
+
+char *_strtok_r(char *str, const char *delim, char **saveptr);
 
 #endif
 
