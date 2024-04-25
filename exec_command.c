@@ -26,10 +26,8 @@ void execute_command(char *full_path, char **args)
 */
 void check_command_path(char *command_path, char **args)
 {
-	char *path = getenv("PATH");
-
+	char *path = _getenv("PATH");
 	char *path_value;
-
 	char full_path[256];
 
 	if (path == NULL)

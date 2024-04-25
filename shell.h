@@ -119,5 +119,14 @@ char *find_command_in_path(char *path, char *command);
 
 void free_memory(char **args, char *path);
 
+/* in env. */
+
+/**
+* _getenv - Retrieves the value of an environment variable.
+* @name: The name of the environment variable.
+* Return: Pointer to the value part of the matched environment variable string.
+*/
+char *_getenv(const char *name);
+
 #endif
 
