@@ -55,9 +55,11 @@ The man page is a file wich explains in detail how Simple Shell works. If you wa
 ### Testing
 
 **Interactive mode**
+
 ![Flowchart](testing_interactive_mode.jpg)
 
 **Non interactive mode**
+
 ![Flowchart](testing_non_interactive_mode.jpg)
 
 ### Checks
