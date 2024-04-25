@@ -15,6 +15,26 @@ void execute_command(char *full_path, char **args)
 }
 
 /**
+* initialize_path - Initializes and checks path
+* @path_env: Environment path variable
+* @path_copy: Buffer to hold the copy of path
+* @path_copy_size: Size of the path_copy buffer
+*
+* Return: (0) if PATH is NULL, (1) otherwise
+*/
+int initialize_path(char **path_env, char *path_copy, size_t path_copy_size)
+{
+	*path_env = _getenv("PATH");
+	if (*path_env == NULL)
+	{
+		return (0);
+	}
+	strncpy(path_copy, *path_env, path_copy_size - 1);
+	path_copy[path_copy_size - 1] = '\0';
+	return (1);
+}
+
+/**
 * find_executable_path - Determines if a command exists and finds its path
 * @command: The command to be executed
 * @resolved_path: Buffer to store the resolved path if command exists
@@ -23,23 +43,12 @@ void execute_command(char *full_path, char **args)
 */
 int find_executable_path(char *command, char *resolved_path)
 {
-	char *path_env;
+	char path_copy[1024], *path_env, *saveptr, *path_value;
 
-	char path_copy[1024];
-
-	char *saveptr;
-
-	char *path_value;
-
-	path_env = _getenv("PATH");
-	if (path_env == NULL)
+	if (!initialize_path(&path_env, path_copy, sizeof(path_copy)))
 	{
 		return (0);
 	}
-
-	/* Make a copy of the PATH env to avoid modifying the original */
-	strncpy(path_copy, path_env, sizeof(path_copy) - 1);
-	path_copy[sizeof(path_copy) - 1] = '\0';
 
 	path_value = _strtok_r(path_copy, ":", &saveptr);
 	while (path_value != NULL)
@@ -56,38 +65,20 @@ int find_executable_path(char *command, char *resolved_path)
 }
 
 /**
-* handle_child_process - Handles the child process execution logic
-* @command_path: The command to be executed
+* validate_command - Validates and processes the command
 * @args: Command arguments
+* @resolved_path: Buffer to store the executable path
 *
-* Return: None
+* Return: (1) if command is valid, (-1) otherwise
 */
-void handle_child_process(char *command_path, char **args)
+int validate_command(char **args, char *resolved_path)
 {
-	char resolved_path[256];
-
-	if (command_path[0] != '/') /* Not an absolute path */
+	if (args[0][0] != '/' && !find_executable_path(args[0], resolved_path))
 	{
-		if (find_executable_path(command_path, resolved_path))
-		{
-			execute_command(resolved_path, args);
-		}
-		else
-		{
-			fprintf(stderr, "%s: command not found\n", command_path);
-			exit(1);
-		}
+		fprintf(stderr, "%s: command not found\n", args[0]);
+		return (-1);
 	}
-	else if (access(command_path, X_OK) == 0) /* Absolute path is executable */
-	{
-		execute_command(command_path, args);
-	}
-	else
-	{
-		fprintf(stderr, "%s: command not found\n", command_path);
-		exit(1);
-	}
-	free(args);
+	return (1);
 }
 
 /**
@@ -101,21 +92,26 @@ int shell_execute(char **args)
 	pid_t pid;
 	int status;
 
+	char resolved_path[256];
+
+	if (validate_command(args, resolved_path) == -1)
+	{
+		return (-1);
+	}
+
 	pid = fork();
 	if (pid < 0)
 	{
 		perror("Fork failed");
-		free(args); /* Free args before returning */
 		return (-1);
 	}
-	if (pid == 0)
+
+	if (pid == 0) /* Child process */
 	{
-		handle_child_process(args[0], args); /* Child process handling */
-		exit(0); /* Exit explicitly after handling */
+		execute_command(args[0][0] != '/' ? resolved_path : args[0], args);
 	}
-	else
+	else /* Parent process */
 	{
-		/* Parent process waits for the child to complete */
 		while (waitpid(pid, &status, 0) != pid)
 		{
 			if (errno != EINTR)
@@ -125,6 +121,5 @@ int shell_execute(char **args)
 			}
 		}
 	}
-	free(args); /* Free args after completion */
 	return (0);
 }
