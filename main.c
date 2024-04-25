@@ -1,6 +1,17 @@
 #include "shell.h"
 
 /**
+ * printf_sdtin - Prints a string to stdout if stdin is a terminal.
+ * Description: This function is used to print a string to stdout only if.
+ * @str: The string to print.
+*/
+void printf_sdtin(const char *str)
+{
+	if (isatty(STDIN_FILENO))
+		printf("%s", str);
+}
+
+/**
 * main - Simple shell function
 * Description: Acts as the entry point for a simple shell.
 * It continuously reads commands from the user, parses them, and executes
@@ -14,6 +25,8 @@ int main(void)
 	char **args;
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;
 	int read;
+	int (*execute)(char **) = NULL;
+	execute_t executes[] = { {"exit", exit_execute}, {NULL, NULL} };
 
 	while (1)
 	{
@@ -23,31 +36,28 @@ int main(void)
 			fprintf(stderr, "Memory allocation failed\n");
 			continue;
 		}
-
-		if (isatty(STDIN_FILENO))
-		{
-			printf(PROMPT);
-		}
-
+		printf_sdtin(PROMPT);
 		read = getline(&cmd, &max_cmd_length, stdin);
 		if (read < 0)
 		{
 			free(cmd);
-			if (isatty(STDIN_FILENO))
-			{
-				printf("\n");
-			}
+			printf_sdtin("\n");
 			break;
 		}
-
 		args = get_argv(cmd);
 		if (args && args[0] != NULL)
 		{
-			shell_execute(args);
+			execute = get_execute_func(executes, args[0]);
+			if (execute != NULL && execute(args) != 0)
+			{
+				free(cmd);
+				free(args);
+				exit(0);
+			}
+			else
+				shell_execute(args);
 		}
-
 		free(cmd);
 	}
-
 	return (0);
 }
