@@ -15,4 +15,18 @@
 
 extern char **environ; /* Use of global environment variable 'environ' */
 
+/*Prototypes*/
+
+/* in main.c */
+int main(void);
+void handle_command(char *command);
+void handle_process(char *command);
+char *initialize_command(void);
+
+/* in spec files */
+int executeCommand(char *command);
+char **tokenizeCommand(char *input);
+char *findCommandPath(char *input);
+char *readCommand(void);
+
 #endif
