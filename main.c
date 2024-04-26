@@ -24,9 +24,13 @@ int main(void)
 	char *cmd;
 	char **args;
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;
+<<<<<<< HEAD
 	int read;
 	int (*execute)(char **) = NULL;
 	execute_t executes[] = { {"exit", exit_execute}, {NULL, NULL} };
+=======
+	ssize_t read;
+>>>>>>> recover
 
 	while (1)
 	{
