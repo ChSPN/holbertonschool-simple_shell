@@ -13,7 +13,7 @@ int main(void)
 	char *cmd;
 	char **args;
 	size_t max_cmd_length = MAX_COMMAND_LENGTH;
-	int read;
+	ssize_t read;
 
 	while (1)
 	{
