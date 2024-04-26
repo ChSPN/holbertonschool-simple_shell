@@ -11,7 +11,7 @@ char *readCommand(void)
 	ssize_t read;
 
 	if (isatty(STDIN_FILENO))
-		printf("$ ");
+		printf(PROMPT);
 
 	fflush(stdout);
 

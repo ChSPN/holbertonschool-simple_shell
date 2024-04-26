@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h> /* Include for struct stat and stat() */
 #include <errno.h>
+#include <signal.h>
 
 #define MAX_ARGS 64
 #define MAX_COMMAND_LENGTH 100
@@ -20,11 +21,6 @@ extern char **environ; /* Use of global environment variable 'environ' */
 /* in main.c */
 int main(void);
 
-
-/* Prototypes from command_handling.c */
-char *initialize_command(void);
-void handle_command(char *command);
-void handle_process(char *command);
 
 /* in spec files */
 int executeCommand(char *command);
