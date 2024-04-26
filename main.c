@@ -1,45 +1,53 @@
 #include "shell.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
-* main - Implements a simple shell using getline
-* Description: Use getline for input handling in a simple shell.
-*              Continuously reads commands from stdin and executes them.
-* Return: Returns EXIT_SUCCESS upon termination of the shell.
+* main - Simple shell function
+* Description: Acts as the entry point for a simple shell.
+* It continuously reads commands from the user, parses them, and executes
+* using the shell_execute function.
+*
+* Return: Returns 0 under normal circumstances, though typically doesn't exit.
 */
 int main(void)
 {
-	char *command = NULL; /* buffer for the command input */
-
-	size_t len = 0; /* length of the input buffer */
-	ssize_t nread; /* number of characters read */
-	char **args; /* argument vector for commands */
+	char *cmd;
+	char **args;
+	size_t max_cmd_length = MAX_COMMAND_LENGTH;
+	int read;
 
 	while (1)
 	{
-		printf(PROMPT);
-		fflush(stdout);
-
-		nread = getline(&command, &len, stdin); /* read a line from stdin */
-		if (nread == -1)
+		cmd = malloc(max_cmd_length * sizeof(char));
+		if (cmd == NULL)
 		{
-			printf("\n");
-			free(args);
-			free(command);
-			break; /* exit on read error or EOF */
-		}
-
-		if (nread == 1) /* skip empty commands */
-		{
+			fprintf(stderr, "Memory allocation failed\n");
 			continue;
 		}
 
-		args = get_argv(command); /* parse command into arguments */
-		shell_execute(args); /* execute the command */
+		if (isatty(STDIN_FILENO))
+		{
+			printf(PROMPT);
+		}
+
+		read = getline(&cmd, &max_cmd_length, stdin);
+		if (read < 0)
+		{
+			free(cmd);
+			if (isatty(STDIN_FILENO))
+			{
+				printf("\n");
+			}
+			break;
+		}
+
+		args = get_argv(cmd);
+		if (args && args[0] != NULL)
+		{
+			shell_execute(args);
+		}
+
+		free(cmd);
 	}
 
-	free(command); /* free the allocated buffer */
-	free(args);
-	return (EXIT_SUCCESS);
+	return (0);
 }
