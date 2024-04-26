@@ -23,31 +23,28 @@ int main(void)
 			fprintf(stderr, "Memory allocation failed\n");
 			continue;
 		}
-
 		if (isatty(STDIN_FILENO))
-		{
 			printf(PROMPT);
-		}
-
 		read = getline(&cmd, &max_cmd_length, stdin);
 		if (read < 0)
 		{
 			free(cmd);
 			if (isatty(STDIN_FILENO))
-			{
 				printf("\n");
-			}
 			break;
 		}
-
 		args = get_argv(cmd);
 		if (args && args[0] != NULL)
 		{
+			if (strcmp(args[0], "exit") == 0)
+			{
+				free(cmd);
+				free(args);
+				exit(0);
+			}
 			shell_execute(args);
 		}
-
 		free(cmd);
 	}
-
 	return (0);
 }
