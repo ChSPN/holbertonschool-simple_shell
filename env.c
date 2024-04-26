@@ -13,12 +13,16 @@
 */
 char *_getenv(const char *name)
 {
+
+		size_t name_len = strlen(name);
+		size_t i;
+
 	if (name == NULL || *name == '\0' || environ == NULL)
 		return (NULL); /* Invalid input or empty environment */
 
-	size_t name_len = strlen(name);
 
-	for (size_t i = 0; environ[i] != NULL; i++)
+
+	for (i = 0; environ[i] != NULL; i++)
 	{
 		if (strncmp(environ[i], name, name_len) == 0 && environ[i][name_len] == '=')
 		{
