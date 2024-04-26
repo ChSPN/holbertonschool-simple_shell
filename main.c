@@ -1,67 +1,42 @@
 #include "shell.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
- * printf_sdtin - Prints a string to stdout if stdin is a terminal.
- * Description: This function is used to print a string to stdout only if.
- * @str: The string to print.
-*/
-void printf_sdtin(const char *str)
-{
-	if (isatty(STDIN_FILENO))
-		printf("%s", str);
-}
-
-/**
-* main - Simple shell function
-* Description: Acts as the entry point for a simple shell.
-* It continuously reads commands from the user, parses them, and executes
-* using the shell_execute function.
-* Score au checker: 23/30
-* Return: Returns 0 under normal circumstances, though typically doesn't exit.
+* main - Implements a simple shell using getline
+* Description: Use getline for input handling in a simple shell.
+*              Continuously reads commands from stdin and executes them.
+* Return: Returns EXIT_SUCCESS upon termination of the shell.
 */
 int main(void)
 {
-	char *cmd;
-	char **args;
-	size_t max_cmd_length = MAX_COMMAND_LENGTH;
-<<<<<<< HEAD
-	int read;
-	int (*execute)(char **) = NULL;
-	execute_t executes[] = { {"exit", exit_execute}, {NULL, NULL} };
-=======
-	ssize_t read;
->>>>>>> recover
+	char *command = NULL; /* buffer for the command input */
+
+	size_t len = 0; /* length of the input buffer */
+	ssize_t nread; /* number of characters read */
+	char **args; /* argument vector for commands */
 
 	while (1)
 	{
-		cmd = malloc(max_cmd_length * sizeof(char));
-		if (cmd == NULL)
+		printf(PROMPT);
+		fflush(stdout);
+
+		nread = getline(&command, &len, stdin); /* read a line from stdin */
+		if (nread == -1)
 		{
-			fprintf(stderr, "Memory allocation failed\n");
-			exit(0);
+			printf("\n");
+			break; /* exit on read error or EOF */
 		}
-		printf_sdtin(PROMPT);
-		read = getline(&cmd, &max_cmd_length, stdin);
-		if (read < 0)
+
+		if (nread == 1) /* skip empty commands */
 		{
-			free(cmd);
-			printf_sdtin("\n");
 			continue;
 		}
-		args = get_argv(cmd);
-		if (args && args[0] != NULL)
-		{
-			execute = get_execute_func(executes, args[0]);
-			if (execute != NULL && execute(args) != 0)
-			{
-				free(cmd);
-				free(args);
-				exit(0);
-			}
-			else if (execute == NULL)
-				shell_execute(args);
-		}
-		free(cmd);
+
+		args = get_argv(command); /* parse command into arguments */
+		shell_execute(args); /* execute the command */
 	}
-	return (0);
+
+	free(command); /* free the allocated buffer */
+	return (EXIT_SUCCESS);
 }
