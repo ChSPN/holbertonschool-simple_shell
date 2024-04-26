@@ -1,11 +1,12 @@
 #include "shell.h"
 
 /**
-* execute_command - Executes a command with given path and args
-* @full_path: The full path to the executable
-* @args: Command arguments
+* execute_command - Executes a command with given path and args.
+* @full_path: The full path to the executable.
+* @args: Command arguments.
 *
-* Return: This function does not return
+* Description: This function uses execve to run the command.
+* If execve fails, it prints an error message and exits.
 */
 void execute_command(char *full_path, char **args)
 {
@@ -15,105 +16,103 @@ void execute_command(char *full_path, char **args)
 }
 
 /**
-* initialize_path - Initializes and checks path
-* @path_env: Environment path variable
-* @path_copy: Buffer to hold the copy of path
-* @path_copy_size: Size of the path_copy buffer
+* check_command_path - Resolves the path of a cmd using the PATH env variable.
+* @command_path: The command to be executed.
+* @args: Command arguments.
 *
-* Return: (0) if PATH is NULL, (1) otherwise
+* Description: Searches the PATH environment variable to find
+* the full path of the command. If found, it executes the command.
+* Otherwise, it prints an error message and exits.
 */
-int initialize_path(char **path_env, char *path_copy, size_t path_copy_size)
+void check_command_path(char *command_path, char **args)
 {
-	*path_env = _getenv("PATH");
-	if (*path_env == NULL)
-	{
-		return (0);
-	}
-	strncpy(path_copy, *path_env, path_copy_size - 1);
-	path_copy[path_copy_size - 1] = '\0';
-	return (1);
-}
+	char *path = getenv("PATH");
 
-/**
-* find_executable_path - Determines if a command exists and finds its path
-* @command: The command to be executed
-* @resolved_path: Buffer to store the resolved path if command exists
-*
-* Return: (1) if command is found and executable, (0) otherwise
-*/
-int find_executable_path(char *command, char *resolved_path)
-{
-	char path_copy[1024], *path_env, *saveptr, *path_value;
+	char *path_value;
 
-	if (!initialize_path(&path_env, path_copy, sizeof(path_copy)))
+	char full_path[256];
+
+	if (path == NULL)
 	{
-		return (0);
+		fprintf(stderr, "PATH not set\n");
+		exit(1);
 	}
 
-	path_value = _strtok_r(path_copy, ":", &saveptr);
+	/* Tokenize the PATH and construct full paths to check for the command */
+	path_value = strtok(path, ":");
 	while (path_value != NULL)
 	{
-		snprintf(resolved_path, 256, "%s/%s", path_value, command);
-		if (access(resolved_path, X_OK) == 0)
+		strcpy(full_path, path_value);
+		strcat(full_path, "/");
+		strcat(full_path, command_path);
+
+		if (access(full_path, X_OK) == 0)
 		{
-			return (1);
+			execute_command(full_path, args);
+			return; /* Exit if command is successfully executed */
 		}
-		path_value = _strtok_r(NULL, ":", &saveptr);
+
+		path_value = strtok(NULL, ":");
 	}
 
-	return (0);
+	fprintf(stderr, "%s: command not found\n", command_path);
+	exit(1);
 }
 
 /**
-* validate_command - Validates and processes the command
-* @args: Command arguments
-* @resolved_path: Buffer to store the executable path
+* handle_child_process - Handles the child process execution logic.
+* @command_path: The command to be executed.
+* @args: Command arguments.
 *
-* Return: (1) if command is valid, (-1) otherwise
+* Description: Decides how to execute the command based on whether
+* it's an absolute path or needs path resolution.
 */
-int validate_command(char **args, char *resolved_path)
+void handle_child_process(char *command_path, char **args)
 {
-	if (args[0][0] != '/' && !find_executable_path(args[0], resolved_path))
+	if (command_path[0] != '/') /* Not an absolute path */
 	{
-		fprintf(stderr, "%s: command not found\n", args[0]);
-		free(args);
-		return (-1);
+		check_command_path(command_path, args);
 	}
-	return (1);
+	else if (access(command_path, X_OK) == 0) /* Absolute path is executable */
+	{
+		execute_command(command_path, args);
+	}
+	else
+	{
+		fprintf(stderr, "%s: command not found\n", command_path);
+		exit(1);
+	}
+	free(args);
 }
 
 /**
-* shell_execute - Executes commands provided by args
-* @args: An array of strings where the 1st is the cmd and the rest are params
+* shell_execute - Executes commands provided by args.
+* @args: An array of strings where the 1st is the cmd and the rest are params.
+* Return: State of execution, 0 on success, -1 on error.
 *
-* Return: State of execution, 0 on success, -1 on error
+* Description: This function creates a child process to execute a command.
+* It handles errors in forking and waits for the child process to complete.
 */
 int shell_execute(char **args)
 {
 	pid_t pid;
 	int status;
 
-	char resolved_path[256];
-
-	if (validate_command(args, resolved_path) == -1)
-	{
-		return (-1);
-	}
-
 	pid = fork();
 	if (pid < 0)
 	{
 		perror("Fork failed");
-		free(args);
+		free(args); /* Free args before returning */
 		return (-1);
 	}
-
-	if (pid == 0) /* Child process */
+	if (pid == 0)
 	{
-		execute_command(args[0][0] != '/' ? resolved_path : args[0], args);
+		handle_child_process(args[0], args); /* Child process handling */
+		exit(0); /* Exit explicitly after handling */
 	}
-	else /* Parent process */
+	else
 	{
+		/* Parent process waits for the child to complete */
 		while (waitpid(pid, &status, 0) != pid)
 		{
 			if (errno != EINTR)
@@ -123,5 +122,6 @@ int shell_execute(char **args)
 			}
 		}
 	}
+	free(args); /* Free args after completion */
 	return (0);
 }

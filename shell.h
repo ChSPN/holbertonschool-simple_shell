@@ -119,26 +119,5 @@ char *find_command_in_path(char *path, char *command);
 
 void free_memory(char **args, char *path);
 
-/* in env.c */
-
-/**
-* _getenv - Retrieves the value of an environment variable.
-* @name: The name of the environment variable.
-* Return: Pointer to the value part of the matched environment variable string.
-*/
-char *_getenv(const char *name);
-
-/* in strings.c */
-
-char *_strtok_r(char *str, const char *delim, char **saveptr);
-
-/* in exec_commands.c */
-
-void execute_command(char *full_path, char **args);
-int initialize_path(char **path_env, char *path_copy, size_t path_copy_size);
-int find_executable_path(char *command, char *resolved_path);
-int validate_command(char **args, char *resolved_path);
-int shell_execute(char **args);
-
 #endif
 

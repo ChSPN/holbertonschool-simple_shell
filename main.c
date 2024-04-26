@@ -5,7 +5,7 @@
 * Description: Acts as the entry point for a simple shell.
 * It continuously reads commands from the user, parses them, and executes
 * using the shell_execute function.
-*
+* Score au checker: 23/30
 * Return: Returns 0 under normal circumstances, though typically doesn't exit.
 */
 int main(void)
