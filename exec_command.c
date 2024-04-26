@@ -76,6 +76,7 @@ int validate_command(char **args, char *resolved_path)
 	if (args[0][0] != '/' && !find_executable_path(args[0], resolved_path))
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
+		free(args);
 		return (-1);
 	}
 	return (1);
@@ -103,6 +104,7 @@ int shell_execute(char **args)
 	if (pid < 0)
 	{
 		perror("Fork failed");
+		free(args);
 		return (-1);
 	}
 

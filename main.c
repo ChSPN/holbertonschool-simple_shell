@@ -25,6 +25,7 @@ int main(void)
 		if (nread == -1)
 		{
 			printf("\n");
+			free(args);
 			break; /* exit on read error or EOF */
 		}
 
