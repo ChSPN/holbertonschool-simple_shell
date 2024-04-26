@@ -73,6 +73,11 @@ int find_executable_path(char *command, char *resolved_path)
 */
 int validate_command(char **args, char *resolved_path)
 {
+	    if (strcmp(args[0], "exit") == 0)  /* Check for the "exit" command */
+	{
+		exit(0);  /* Exit the shell */
+	}
+
 	if (args[0][0] != '/' && !find_executable_path(args[0], resolved_path))
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
