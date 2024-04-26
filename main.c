@@ -26,6 +26,7 @@ int main(void)
 		{
 			printf("\n");
 			free(args);
+			free(command);
 			break; /* exit on read error or EOF */
 		}
 
@@ -39,5 +40,6 @@ int main(void)
 	}
 
 	free(command); /* free the allocated buffer */
+	free(args);
 	return (EXIT_SUCCESS);
 }
